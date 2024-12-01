@@ -19,14 +19,22 @@ function SearchBar({ setBudget, toggleAddExpense }) {
   }
   
 
+  const handleButton=(value)=>{
+    {value.filter}
+
+  }
+
+ 
+
   return (
     <div className='search-bar'>
       <input type='text' placeholder='Search' />
       <div className='categories'>
-        <button><box-icon name='pizza' type='solid' className='icon'></box-icon>Food & Drinks</button>
-        <button><box-icon name='shopping-bag' className='icon'></box-icon>Groceries</button>
-        <button><box-icon name='briefcase-alt' className='icon'></box-icon>Travel</button>
-        <button><box-icon name='shield-plus' className='icon'></box-icon>Health</button>
+      <button value={'all expense'}><box-icon name='menu'type='solid' className='icon' ></box-icon>All Expense</button>
+        <button value={food & drink}><box-icon name='pizza' type='solid' className='icon'></box-icon>Food & Drinks</button>
+        <button value={Groceries}><box-icon name='shopping-bag' className='icon'></box-icon>Groceries</button>
+        <button value={travel}><box-icon name='briefcase-alt' className='icon'></box-icon>Travel</button>
+        <button value={health}><box-icon name='shield-plus' className='icon'></box-icon>Health</button>
 
         <button className='primary-button' onClick={handleAddBudget}>
           <box-icon name='plus' className='icon'></box-icon>Add Budget

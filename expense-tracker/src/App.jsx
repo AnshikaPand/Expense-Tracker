@@ -7,46 +7,52 @@ import SearchBar from "./component/SearchBar";
 import ExpenseTable from "./component/ExpenseTable";
 import AddExpense from "./component/AddExpense";
 import NewBudget from "./component/NewBudget";
+import PieChart from "./component/PIeChart";
 
 function App() {
   const [budget, setBudget] = useState(10000);
   const [isEditing, setIsEditing] = useState(false); 
 
-   
-
   const [showAddExpenseForm, setShowAddExpenseForm] = useState(false); 
 
- 
+  const[editeExpenseData,setEditeExpenseData] =useState(null)
 
-
-
+  const[showPieChart ,setShowPieChart]=useState(false)
 
   const [expenses, setExpenses] = useState([
     { date: "21-10-2024", name: "Groceries", amount: 1200 },
     { date: "21-10-2024", name: "Travel", amount: 3500 },
     { date: "21-10-2024", name: "Health", amount: 3500 },
-    { date: "21-10-2024", name: "kuchbhi", amount: 3500 },
+    { date: "21-10-2024", name: "Food & Drinks", amount: 3500 },
     { date: "21-10-2024", name: "Travel", amount: 3500 },
     { date: "21-10-2024", name: "Travel", amount: 3500 },
   ]);
 
   const [totalExpense, setTotalExpense] = useState(
-    expenses.reduce((sum, expense) => sum + expense.amount  , 0)
+    expenses.reduce((sum, expense) => sum + expense.amount   , 0)
   );
+
+  
 
   // Handle Add or Edit Expense
   const handleAddOrEditExpense = (expense, isEditing = false, index = null) => {
-    if (isEditing) {
+    console.log("Received data in handleAddOrEditExpense:", expense);
+    console.log("Is editing?", isEditing, "Index:", index);
+  
+    if (isEditing && index !== null) {
+     
       const updatedExpenses = [...expenses];
-      const oldAmount = updatedExpenses[index].amount;
       updatedExpenses[index] = expense;
       setExpenses(updatedExpenses);
-      setTotalExpense(totalExpense - oldAmount + expense.amount);
     } else {
-      setExpenses([...expenses, expense]);
-      setTotalExpense(totalExpense + expense.amount);
+     
+      setExpenses((prevExpenses) => [...prevExpenses, expense]); 
     }
+  
+    
+    setTotalExpense(expenses.reduce((sum, expense) => sum + Number(expense.amount), 0));
   };
+  
 
   // Handle Delete Expense
   const handleDeleteExpense = (index) => {
@@ -57,12 +63,10 @@ function App() {
   };
 
   // Toggle visibility of AddExpense form
-  const toggleAddExpense = () => {
+  const toggleAddExpense = (expenseData =null) => {
+    setEditeExpenseData(expenseData)
     setShowAddExpenseForm((prev) => !prev); // Toggle the modal visibility
   };
-
-  
-  
 
   return (
     <>
@@ -72,15 +76,16 @@ function App() {
       </div>
 
       <div className="FinancialStatus-wrapper">
-        <FinancialStatus>
-          <p>Your Budget</p>
-          <i className="bx bx-edit-alt icon-with-blue-background "></i>
-          <h3>₹{budget}/m</h3>
-        </FinancialStatus>
+        <FinancialStatus budget={budget} title={"Your Budget"} />
+        <FinancialStatus budget={totalExpense} title={"Total Expense"} iconClick={()=> {}} />
+        <FinancialStatus budget={budget - totalExpense} title={"Remaining Budget"} />  
 
-        <FinancialStatus>
+
+
+
+        {/* <FinancialStatus>
           <p>Total Expense</p>
-          <i className="bx bx-line-chart icon-with-blue-background"></i>
+          <i className="bx bx-line-chart icon-with-blue-background" onClick={()=>setShowPieChart((prev)=>!prev)}></i>
           <h3>₹{totalExpense}</h3>
         </FinancialStatus>
 
@@ -88,7 +93,7 @@ function App() {
           <p>Remaining Budget</p>
           <i className="bx bx-line-chart icon-with-blue-background"></i>
           <h3>₹{budget - totalExpense}</h3>
-        </FinancialStatus>
+        </FinancialStatus> */}
       </div>
 
       {/* SearchBar and Add Expense buttons */}
@@ -96,12 +101,17 @@ function App() {
         <SearchBar setBudget={setBudget} toggleAddExpense={toggleAddExpense} />
       </div>
 
+  <div className="pie-chart-wrapper">
+  <PieChart expenses={expenses} />
+  </div>
+      
+
       {/* Expense Table */}
       <div className="expense-list-wrapper">
         <ExpenseTable
           expenses={expenses}
           onDeleteExpense={handleDeleteExpense}
-          onEditExpense={handleAddOrEditExpense}
+          onEditExpense={(expense , index)=>toggleAddExpense(expense ,index)}
         />
       </div>
        
@@ -109,13 +119,15 @@ function App() {
       {/* Conditionally render the AddExpense component */}
       {showAddExpenseForm && (
         <AddExpense
+           expense={editeExpenseData}
           onSaveExpense={handleAddOrEditExpense}
           onCancel={toggleAddExpense}
         />
+        
       )}
-     
     
-
+           
+         
     </>
   );
 }

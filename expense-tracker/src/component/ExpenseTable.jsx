@@ -2,6 +2,8 @@ import React from 'react'
 import "../index.css";
 
 function ExpenseTable({ expenses, onDeleteExpense, onEditExpense }) {
+
+  
   const handleEditClick = (index) => {
     const expenseToEdit = expenses[index];
     const updatedExpense = { ...expenseToEdit, name: prompt("Enter new name:", expenseToEdit.name) || expenseToEdit.name };
@@ -9,6 +11,7 @@ function ExpenseTable({ expenses, onDeleteExpense, onEditExpense }) {
     onEditExpense({ ...updatedExpense, amount: updatedAmount }, true, index);
   };
 
+  
   return (
     <div className='expense-table-container'>
       <table className="expense-table">
